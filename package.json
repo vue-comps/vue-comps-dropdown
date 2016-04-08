@@ -1,7 +1,7 @@
 {
   "name": "vue-comps-dropdown",
   "description": "a advanced dropdown menu",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/vue-comps",
   "author": {
     "name": "Paul Pflugradt",
@@ -20,8 +20,7 @@
     "vue-filters": "^0.1.6",
     "vue-mixins": "^0.2.2"
   },
-  "peerDependencies": {
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "babel-core": "^6.7.4",
     "babel-loader": "^6.2.4",
