@@ -1,6 +1,6 @@
 # vue-comps-dropdown
 
-H
+a advanced dropdown/up/left/right menu
 
 ### [See it in action](https://vue-comps.github.io/vue-comps-dropdown)
 
