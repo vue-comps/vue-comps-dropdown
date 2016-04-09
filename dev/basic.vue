@@ -2,16 +2,16 @@
 .container
   button Click
     dropdown
-      p Content
+      li Content
   button Click
     dropdown
-      p Content
+      li Content
   button Click
     dropdown
-      p Content
+      li Content
   button Click
     dropdown
-      p Content
+      li Content
   a(href="https://github.com/vue-comps/vue-comps-dropdown/blob/master/dev/basic.vue") source
 </template>
 
@@ -41,8 +41,12 @@ button
   &:nth-child(4)
     bottom 10px
     right 10px
-.vc-dropdown
+.dropdown-content
+  margin 0
+  padding 0
+  list-style-type none
   background white
   border 1px solid black
   width 80px
+
 </style>

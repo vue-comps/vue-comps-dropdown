@@ -2,16 +2,16 @@
 .container
   button Click
     dropdown(overlay)
-      p Content
+      li Content
   button Click
     dropdown(overlay)
-      p Content
+      li Content
   button Click
     dropdown(overlay)
-      p Content
+      li Content
   button Click
     dropdown(overlay)
-      p Content
+      li Content
   a(href="https://github.com/vue-comps/vue-comps-dropdown/blob/master/dev/overlay.vue") source
 </template>
 
@@ -41,7 +41,7 @@ button
   &:nth-child(4)
     bottom 10px
     right 10px
-.vc-dropdown
+.dropdown-content
   background white
   border 1px solid black
   width 80px

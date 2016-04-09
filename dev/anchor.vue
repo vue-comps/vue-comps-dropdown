@@ -2,16 +2,16 @@
 .container
   button anchor="sw"
     dropdown(anchor="sw")
-      p Content
+      li Content
   button anchor="se"
     dropdown(anchor="se")
-      p Content
+      li Content
   button anchor="nw"
     dropdown(anchor="nw")
-      p Content
+      li Content
   button anchor="ne"
     dropdown(anchor="ne")
-      p Content
+      li Content
   a(href="https://github.com/vue-comps/vue-comps-dropdown/blob/master/dev/anchor.vue") source
 </template>
 
@@ -41,7 +41,7 @@ button
   &:nth-child(4)
     bottom 10px
     right 10px
-.vc-dropdown
+.dropdown-content
   background white
   border 1px solid black
   width 80px

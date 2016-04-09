@@ -1,6 +1,6 @@
 // out: ..
 <template lang="jade">
-.vc-dropdown(:style="style" v-if="opened" @click.prevent="onClick" @keyup.esc="close | notPrevented | prevent" v-el:dd)
+ul(:style="style" v-if="opened" @click.prevent="onClick" @keyup.esc="close | notPrevented | prevent" v-el:dd v-bind:class="[class]")
   slot No content
 </template>
 
@@ -10,6 +10,8 @@ module.exports =
   mixins:[
     require("vue-mixins/getViewportSize")
     require("vue-mixins/onceDocument")
+    require("vue-mixins/isOpened")
+    require("vue-mixins/parentListener")
   ]
 
   filters:
@@ -17,44 +19,39 @@ module.exports =
     prevent: require("vue-filters/prevent")
 
   props:
-    "closeOnClick":
+    "class":
+      type: String
+      default: "dropdown-content"
+    "notDissmissible":
       type: Boolean
-      default: true
+      default: false
+    "notCloseOnClick":
+      type: Boolean
+      default: false
     "constrainWidth":
       type: Boolean
       default: false
     "overlay":
       type: Boolean
       default: false
-    "onClick":
-      type: Boolean
-      default: true
     "offset":
       type: Number
       default: 0
     "anchor":
       type: String
-    "isOpened":
-      type:Boolean
-      default: false
-    "fadeIn":
+    "transitionIn":
       type: Function
       default: ({el,cb}) ->
         @style.opacity = 1
         cb()
-    "fadeOut":
+    "transitionOut":
       type: Function
       default: ({el,cb}) ->
         @style.opacity = 0
         cb()
-    "parent":
-      type: Object
 
   data: ->
-    active: false
-    opened: false
     removeDocumentClickListener: null
-    removeParentClickListener: null
     clickInside: false
     removeTimeout: null
     style:
@@ -62,15 +59,9 @@ module.exports =
       opacity: 0
       left: undefined
       top: undefined
+      display: "block"
 
-  watch:
-    "isOpened": (val) ->
-      if val != @opened
-        if val
-          @open()
-        else
-          @close()
-    "parent": "setupParent"
+
 
   methods:
     onClick: (e) ->
@@ -89,19 +80,14 @@ module.exports =
       @clickInside = true
       @removeTimeout?()
       @removeTimeout = setTimeout (=>@clickInside = false),10
+      @close() unless @notCloseOnClick
 
-    setupParent: (parent = @parent) ->
-      if @onClick
-        @removeParentClickListener?()
-        parent.addEventListener "click", @onParentClick
-        @removeParentClickListener = ->
-          parent.removeEventListener "click", @onParentClick
+
 
     show: ->
       return if @opened
-      @opened = true
-      @isOpened = true
-      @$nextTick =>
+      @setOpened()
+      @$nextTick => @$nextTick =>
         if @constrainWidth
           width = @parent.offsetWidth
           @style.width = width-@offset+'px'
@@ -147,14 +133,14 @@ module.exports =
         left += @parent.offsetLeft unless parentIsPositioned
         @style.left = left + "px"
 
-        if @closeOnClick
+        unless @notDissmissible
           @removeDocumentClickListener?()
           @removeDocumentClickListener = @onceDocument "click", (e) =>
             @hide() unless @clickInside
             return !@clickInside #should remove?
 
         @$emit "beforeOpen"
-        @fadeIn el:@$els.dd,cb: =>
+        @transitionIn el:@$els.dd,cb: =>
           @$emit "opened"
 
     hide: ->
@@ -162,9 +148,8 @@ module.exports =
       @removeDocumentClickListener?()
       @removeDocumentClickListener = null
       @$emit "beforeClose"
-      @fadeOut el:@$els.dd, cb: =>
-        @opened = false
-        @isOpened = false
+      @transitionOut el:@$els.dd, cb: =>
+        @setClosed()
         @$emit "closed"
 
     open: ->
@@ -182,14 +167,12 @@ module.exports =
     unless @anchor
       @anchor = if @overlay then "nw" else "sw"
 
-  attached: ->
-    unless @parent?
-      @parent = @$el.parentElement
-    else
-      @setupParent()
 
   dettached: ->
-    @removeParentClickListener?()
     @removeDocumentClickListener?()
 
+  events:
+    close: ->
+      @close()
+      return true
 </script>

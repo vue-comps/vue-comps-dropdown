@@ -28,18 +28,21 @@ see `dev/` for examples
 | ---:| --- | ---| --- |
 | offset | Number | 0 | horizontal offset |
 | anchor | String | overlay ? "nw" : "sw" | point of the parent where it will be attached |
-| closeOnClick | Boolean | true | will be closed on click outside |
-| constrainWidth | Boolean | false | width as parent width |
+| class | String | dropdown-content | class of the `ul`|
+| not-dissmissible| Boolean | false | will be not close on click outside of dropdown|
+| not-close-on-click | Boolean | false | will not be closed on click inside of dropdown |
+| constrain-width | Boolean | false | width as parent width |
 | overlay | Boolean | false | will overlay parent |
-| onClick | Boolean | true | will set-up click listener on parent |
-| isOpened | Boolean | false | (two-way) set to open / close |
-| fadeIn | function | no animation | set animation with opacity = 1. Argument: {el,cb} |
-| fadeOut | function | no animation | set animation with opacity = 0. Argument: {el,cb} |
+| ignore-parent | Boolean | false | will not set-up click listener on parent |
+| is-opened | Boolean | false | (two-way) set to open / close |
+| transition-in | function | no animation | set animation with opacity = 1. Argument: {el,cb} |
+| transition-out | function | no animation | set animation with opacity = 0. Argument: {el,cb} |
 | parent | element | parentElement | where the dropdown should attach |
 
 #### Events
 | Name |  description |
 | ---:| --- |
+| close |  when received, will close |
 | before-open | will be called before open animation |
 | opened |  will be called when opened |
 | before-close |  will be called before close animation |
