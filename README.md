@@ -1,15 +1,15 @@
 # vue-comps-dropdown
 
-a advanced dropdown/up/left/right menu
+a advanced dropdown/up/left/right menu.
 
-### [See it in action](https://vue-comps.github.io/vue-comps-dropdown)
+### [Demo](https://vue-comps.github.io/vue-comps-dropdown)
 
 # Install
 
 ```sh
 npm install --save-dev vue-comps-dropdown
 ```
-or include `build/bundle.js`
+or include `build/bundle.js`.
 
 ## Usage
 ```coffee
@@ -20,8 +20,14 @@ components:
 components:
   "dropdown": window.vueComps.dropdown
 ```
-
-see `dev/` for examples
+```html
+<button> Open Dropdown
+  <dropdown>
+    <li>Content</li>
+  </dropdown>
+</button>
+```
+see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) for examples.
 
 #### Props
 | Name | type | default | description |
@@ -51,12 +57,12 @@ see `dev/` for examples
 
 
 # Development
-Clone repository
+Clone repository.
 ```sh
 npm install
 npm run dev
 ```
-Browse to `http://localhost:8080/`
+Browse to `http://localhost:8080/`.
 
 ## License
 Copyright (c) 2016 Paul Pflugradt
