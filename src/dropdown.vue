@@ -1,6 +1,6 @@
 // out: ..
-<template lang="jade">
-ul(:style="style" v-if="opened" @click.prevent="onClick" @keyup.esc="close | notPrevented | prevent" v-el:dd v-bind:class="[class]")
+<template lang="pug">
+ul(v-bind:style="computedStyle" v-bind:id="id" v-if="opened" @click="onClick" @keyup.esc="close" v-el:dd v-bind:class="computedClass")
   slot No content
 </template>
 
@@ -12,20 +12,22 @@ module.exports =
     require("vue-mixins/onceDocument")
     require("vue-mixins/isOpened")
     require("vue-mixins/parentListener")
+    require("vue-mixins/class")
+    require("vue-mixins/style")
   ]
 
-  filters:
-    notPrevented: require("vue-filters/notPrevented")
-    prevent: require("vue-filters/prevent")
 
   props:
-    "class":
+    "id":
       type: String
-      default: "dropdown-content"
-    "notDissmissible":
+    "class":
+      default: -> []
+    "style":
+      default: -> []
+    "notDismissable":
       type: Boolean
       default: false
-    "notCloseOnClick":
+    "closeOnClick":
       type: Boolean
       default: false
     "constrainWidth":
@@ -37,50 +39,57 @@ module.exports =
     "offset":
       type: Number
       default: 0
+      coerce: Number
     "anchor":
       type: String
     "transitionIn":
       type: Function
       default: ({el,cb}) ->
-        @style.opacity = 1
+        @mergeStyle.opacity = 1
         cb()
     "transitionOut":
       type: Function
       default: ({el,cb}) ->
-        @style.opacity = 0
+        @mergeStyle.opacity = 0
         cb()
 
   data: ->
     removeDocumentClickListener: null
     clickInside: false
     removeTimeout: null
-    style:
+    mergeStyle:
       position: "absolute"
       opacity: 0
       left: undefined
       top: undefined
       display: "block"
 
-
+  computed:
+    cAnchor: ->
+      return @anchor if @anchor
+      return "nw" if @overlay
+      return "sw"
 
   methods:
     onClick: (e) ->
+      e.preventDefault()
       @setClickInside()
 
     onParentClick: (e) ->
       return if e.defaultPrevented
+      e.preventDefault()
       @setClickInside()
       if @opened
         @close()
       else
         @open()
-      e.preventDefault()
+
 
     setClickInside: ->
       @clickInside = true
       @removeTimeout?()
       @removeTimeout = setTimeout (=>@clickInside = false),10
-      @close() unless @notCloseOnClick
+      @close() if @closeOnClick
 
 
 
@@ -90,10 +99,10 @@ module.exports =
       @$nextTick => @$nextTick =>
         if @constrainWidth
           width = @parent.offsetWidth
-          @style.width = width-@offset+'px'
+          @mergeStyle.width = width-@offset+'px'
         else
           width = @$els.dd.offsetWidth
-          @style.width = undefined
+          @mergeStyle.width = undefined
         totalHeight = @$els.dd.offsetHeight
         totalHeight += @parent.offsetHeight unless @overlay
 
@@ -103,10 +112,10 @@ module.exports =
         windowSize = @getViewportSize()
 
         asTop = true
-        if (@anchor[0] == "n" and @overlay) or (@anchor[0] == "s" and not @overlay)
+        if (@cAnchor[0] == "n" and @overlay) or (@cAnchor[0] == "s" and not @overlay)
           asTop = parentPos.top + totalHeight <= windowSize.height
         else
-          asTop = parentPos.bottom + totalHeight <= 0
+          asTop = parentPos.bottom - totalHeight <= 0
         top = 0
         topBorder = parseInt(parentStyle.getPropertyValue("border-top-width").replace("px",""))
         if asTop
@@ -114,26 +123,43 @@ module.exports =
             top = @parent.clientHeight + topBorder
           else
             top = -topBorder
+          unless parentIsPositioned
+            bottomBorder = parseInt(parentStyle.getPropertyValue("border-bottom-width").replace("px",""))
+            top += bottomBorder
         else
-          top = -totalHeight + @parent.offsetHeight - topBorder
+          top = -totalHeight + @parent.offsetHeight
+          if parentIsPositioned
+            top -= topBorder
         top += @parent.offsetTop unless parentIsPositioned
-        @style.top = top + "px"
+        @mergeStyle.top = top + "px"
 
         asLeft = true
-        left = @offset
-        if @anchor[1] == "e"
-          asLeft = parentPos.right + width > 0
+        left = 0
+        if @cAnchor[1] == "e"
+          asLeft = parentPos.right - width > 0
           left += @parent.offsetWidth - width
         else
           asLeft = parentPos.left + width <= windowSize.width
-        if asLeft
-          left -= parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
-        else
-          left -= @parent.clientWidth - parseInt(parentStyle.getPropertyValue("border-left-width").replace("px","")) - parseInt(parentStyle.getPropertyValue("border-right-width").replace("px",""))
-        left += @parent.offsetLeft unless parentIsPositioned
-        @style.left = left + "px"
+        unless asLeft
+          left -= width - @parent.clientWidth
 
-        unless @notDissmissible
+        if asLeft and @cAnchor[1] == "w"
+          left += @offset
+        else
+          left -= @offset
+
+        if asLeft
+          if parentIsPositioned
+            left -= parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
+        else
+          unless parentIsPositioned
+            left += parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
+          left += parseInt(parentStyle.getPropertyValue("border-right-width").replace("px",""))
+
+        left += @parent.offsetLeft unless parentIsPositioned
+        @mergeStyle.left = left + "px"
+
+        unless @notDismissable
           @removeDocumentClickListener?()
           @removeDocumentClickListener = @onceDocument "click", (e) =>
             @hide() unless @clickInside
@@ -155,7 +181,11 @@ module.exports =
     open: ->
       @show()
 
-    close: ->
+    close: (e) ->
+      if e?
+        return if e.defaultPrevented
+        e.preventDefault()
+
       @hide()
 
     toggle:  ->
@@ -163,16 +193,8 @@ module.exports =
         @close()
       else
         @open()
-  compiled: ->
-    unless @anchor
-      @anchor = if @overlay then "nw" else "sw"
-
 
   dettached: ->
     @removeDocumentClickListener?()
 
-  events:
-    close: ->
-      @close()
-      return true
 </script>

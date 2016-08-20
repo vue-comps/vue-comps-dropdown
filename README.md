@@ -35,8 +35,8 @@ see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) fo
 | offset | Number | 0 | horizontal offset |
 | anchor | String | overlay ? "nw" : "sw" | point of the parent where it will be attached |
 | class | String | dropdown-content | class of the `ul`|
-| not-dissmissible| Boolean | false | will be not close on click outside of dropdown|
-| not-close-on-click | Boolean | false | will not be closed on click inside of dropdown |
+| not-dismissable| Boolean | false | will be not close on click outside of dropdown|
+| close-on-click | Boolean | false | will be closed also on click inside of dropdown |
 | constrain-width | Boolean | false | width as parent width |
 | overlay | Boolean | false | will overlay parent |
 | ignore-parent | Boolean | false | will not set-up click listener on parent |
@@ -48,11 +48,10 @@ see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) fo
 #### Events
 | Name |  description |
 | ---:| --- |
-| close |  when received, will close |
-| before-open | will be called before open animation |
-| opened |  will be called when opened |
-| before-close |  will be called before close animation |
-| closed |  will be called when closed |
+| before-open | will be emitted before open animation |
+| opened |  will be emitted when opened |
+| before-close |  will be emitted before close animation |
+| closed |  will be emitted when closed |
 
 
 
