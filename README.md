@@ -27,6 +27,9 @@ components:
   </dropdown>
 </button>
 ```
+altough the `dropdown` is defined within the `button`, it will be positioned as a sibling of the `parent`.
+
+
 see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) for examples.
 
 #### Props
@@ -43,7 +46,7 @@ see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) fo
 | is-opened | Boolean | false | (two-way) set to open / close |
 | transition-in | function | no animation | set animation with opacity = 1. Argument: {el,cb} |
 | transition-out | function | no animation | set animation with opacity = 0. Argument: {el,cb} |
-| parent | element | parentElement | where the dropdown should attach |
+| parent | element | parentElement | where the dropdown should attach as a sibling |
 
 #### Events
 | Name |  description |
@@ -53,7 +56,10 @@ see [`dev/`](https://github.com/vue-comps/vue-comps-dropdown/tree/master/dev) fo
 | before-close |  will be emitted before close animation |
 | closed |  will be emitted when closed |
 
+## Changelog
 
+- 1.1.0  
+dropdown will be positioned as a sibling of `parent`
 
 # Development
 Clone repository.
