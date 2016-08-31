@@ -33,6 +33,9 @@ module.exports =
     "constrainWidth":
       type: Boolean
       default: false
+    "noSibling":
+      type: Boolean
+      default: false
     "overlay":
       type: Boolean
       default: false
@@ -97,7 +100,8 @@ module.exports =
       return if @opened
       @setOpened()
       @$nextTick =>
-        @parent.parentNode.insertBefore(@$els.dd, @parent.nextSibling)
+        unless @noSibling
+          @parent.parentElement.insertBefore(@$els.dd, @parent.nextSibling)
         @$nextTick =>
           if @constrainWidth
             width = @parent.offsetWidth
@@ -109,6 +113,7 @@ module.exports =
           totalHeight += @parent.offsetHeight unless @overlay
 
           parentStyle = getComputedStyle(@parent)
+          parentIsPositioned = @noSibling and  /relative|absolute|fixed/.test(parentStyle.getPropertyValue("position"))
           parentPos = @parent.getBoundingClientRect()
           windowSize = @getViewportSize()
 
@@ -124,11 +129,14 @@ module.exports =
               top = @parent.clientHeight + topBorder
             else
               top = -topBorder
-            bottomBorder = parseInt(parentStyle.getPropertyValue("border-bottom-width").replace("px",""))
-            top += bottomBorder
+            unless parentIsPositioned
+              bottomBorder = parseInt(parentStyle.getPropertyValue("border-bottom-width").replace("px",""))
+              top += bottomBorder
           else
             top = -totalHeight + @parent.offsetHeight
-          top += @parent.offsetTop
+            if parentIsPositioned
+              top -= topBorder
+          top += @parent.offsetTop unless parentIsPositioned
           @mergeStyle.top = top + "px"
 
           asLeft = true
@@ -146,11 +154,15 @@ module.exports =
           else
             left -= @offset
 
-          unless asLeft
-            left += parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
+          if asLeft
+            if parentIsPositioned
+              left -= parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
+          else
+            unless parentIsPositioned
+              left += parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
             left += parseInt(parentStyle.getPropertyValue("border-right-width").replace("px",""))
 
-          left += @parent.offsetLeft
+          left += @parent.offsetLeft unless parentIsPositioned
           @mergeStyle.left = left + "px"
 
           unless @notDismissable
