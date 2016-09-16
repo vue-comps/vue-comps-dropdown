@@ -70,7 +70,7 @@ transitions: {
   }
 }
 // usage:
-template: "<dropdown transition='fade'></tooltip>"
+template: "<dropdown transition='fade'></dropdown>"
 ```
 
 You can access several properties in your enter hook:
