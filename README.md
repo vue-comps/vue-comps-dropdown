@@ -50,16 +50,46 @@ parent | element | parentElement | where the dropdown should attach as a sibling
 no-sibling | Boolean | false | position as child instead of sibling of `parent`
 
 #### Events
-| Name |  description
+Name |  description
 ---:| ---
-before-open | will be emitted before open animation
-opened |  will be emitted when opened
-before-close |  will be emitted before close animation
-closed |  will be emitted when closed
+before-enter | will be called before open animation
+after-enter |  will be called when opened
+before-leave |  will be called before close animation
+after-leave |  will be called when closed
+
+#### Transition
+
+You can provide a vue transition like this:
+```js
+Vue.transition("fade",{
+  // your transition
+})
+// or in the instance:
+transitions: {
+  fade: {
+    // your transition
+  }
+}
+// usage:
+template: "<dropdown transition='fade'></tooltip>"
+```
+
+You can access several properties in your enter hook:
+```js
+enter: function(el,cb) {
+  // style properties as numbers
+  this.top
+  this.left
+}
+```
 
 ## Changelog
 
-- 1.1.1
+- 1.2.0  
+now using vue transitions  
+events are renamed after vue transitions  
+
+- 1.1.1  
 added `no-sibling` prop to disable positioning as sibling of `parent`
 
 - 1.1.0  
