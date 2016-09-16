@@ -44,8 +44,7 @@ constrain-width | Boolean | false | width as parent width
 overlay | Boolean | false | will overlay parent
 ignore-parent | Boolean | false | will not set-up click listener on parent
 is-opened | Boolean | false | (two-way) set to open / close
-transition-in | function | no animation | set animation with opacity = 1. Argument: {el,cb}
-transition-out | function | no animation | set animation with opacity = 0. Argument: {el,cb}
+transition | String | - | name of a vue transition. [Detailed description](#transition)
 parent | element | parentElement | where the dropdown should attach as a sibling
 no-sibling | Boolean | false | position as child instead of sibling of `parent`
 
