@@ -46,6 +46,9 @@ module.exports =
       coerce: Number
     "anchor":
       type: String
+    "onBody":
+      type: Boolean
+      default: false
 
   data: ->
     removeDocumentClickListener: null
@@ -110,7 +113,7 @@ module.exports =
 
       @hide()
 
-    toggle:  ->
+    toggle: ->
       if @opened
         @close()
       else
@@ -118,69 +121,66 @@ module.exports =
 
   ready: ->
     @$on "before-enter", ->
-      unless @noSibling
+      if @onBody
+        document.body.appendChild @$els.dd if @onBody
+      else unless @noSibling
         @parent.parentElement.insertBefore(@$els.dd, @parent.nextSibling)
+
       @$nextTick =>
+
         if @constrainWidth
-          width = @parent.offsetWidth
-          @mergeStyle.width = width-@offset+'px'
+          offset = Math.abs(@offset)
+          totalWidth = @parent.offsetWidth-offset
+          @mergeStyle.width = totalWidth+'px'
         else
-          width = @$els.dd.offsetWidth
+          offset = @offset
+          totalWidth = @$els.dd.offsetWidth+offset
           @mergeStyle.width = undefined
         totalHeight = @$els.dd.offsetHeight
         totalHeight += @parent.offsetHeight unless @overlay
 
-        parentStyle = getComputedStyle(@parent)
-        parentIsPositioned = @noSibling and  /relative|absolute|fixed/.test(parentStyle.getPropertyValue("position"))
+
         parentPos = @parent.getBoundingClientRect()
         windowSize = @getViewportSize()
 
         asTop = true
         if (@cAnchor[0] == "n" and @overlay) or (@cAnchor[0] == "s" and not @overlay)
-          asTop = parentPos.top + totalHeight <= windowSize.height
+          asTop = parentPos.top + totalHeight < windowSize.height
         else
-          asTop = parentPos.bottom - totalHeight <= 0
-        top = 0
-        topBorder = parseInt(parentStyle.getPropertyValue("border-top-width").replace("px",""))
-        if asTop
-          unless @overlay
-            top = @parent.clientHeight + topBorder
-          else
-            top = -topBorder
-          unless parentIsPositioned
-            bottomBorder = parseInt(parentStyle.getPropertyValue("border-bottom-width").replace("px",""))
-            top += bottomBorder
-        else
-          top = -totalHeight + @parent.offsetHeight
-          if parentIsPositioned
-            top -= topBorder
-        top += @parent.offsetTop unless parentIsPositioned
-        @top = top
+          asTop = parentPos.bottom - totalHeight < 0
 
         asLeft = true
-        left = 0
         if @cAnchor[1] == "e"
-          asLeft = parentPos.right - width > 0
-          left += @parent.offsetWidth - width
+          asLeft = parentPos.right - totalWidth < 0
         else
-          asLeft = parentPos.left + width <= windowSize.width
-        unless asLeft
-          left -= width - @parent.clientWidth
+          asLeft = parentPos.left + totalWidth < windowSize.width
 
-        if asLeft and @cAnchor[1] == "w"
-          left += @offset
+        top = 0
+        if asTop
+          top += @parent.offsetHeight unless @overlay
         else
-          left -= @offset
+          top -= totalHeight - @parent.offsetHeight
 
+        left = 0
         if asLeft
-          if parentIsPositioned
-            left -= parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
+          left += offset
         else
-          unless parentIsPositioned
-            left += parseInt(parentStyle.getPropertyValue("border-left-width").replace("px",""))
-          left += parseInt(parentStyle.getPropertyValue("border-right-width").replace("px",""))
+          left -= totalWidth - @parent.offsetWidth
 
-        left += @parent.offsetLeft unless parentIsPositioned
+        if @onBody
+          body = document.body
+          docEl = document.documentElement
+          scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop
+          scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft
+          top += scrollTop + parentPos.top
+          left += scrollLeft + parentPos.left
+        else
+          parentIsPositioned = @noSibling and  /relative|absolute|fixed/.test(parentStyle.getPropertyValue("position"))
+          unless parentIsPositioned
+            top += @parent.offsetTop
+            left += @parent.offsetLeft
+
+        @top = top
         @left = left
 
         unless @notDismissable
@@ -189,6 +189,9 @@ module.exports =
             @hide() unless @clickInside
             return !@clickInside #should remove?
 
-  dettached: ->
+  beforeDestroy: ->
     @removeDocumentClickListener?()
+    el = @$els.dd
+    if el?
+      el.parentNode.removeChild(el)
 </script>

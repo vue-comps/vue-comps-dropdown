@@ -37,7 +37,6 @@ Name | type | default | description
 ---:| --- | ---| ---
 offset | Number | 0 | horizontal offset
 anchor | String | overlay ? "nw" : "sw" | point of the parent where it will be attached
-class | String | dropdown-content | class of the `ul`
 not-dismissable| Boolean | false | will be not close on click outside of dropdown
 close-on-click | Boolean | false | will be closed also on click inside of dropdown
 constrain-width | Boolean | false | width as parent width
@@ -47,6 +46,7 @@ is-opened | Boolean | false | (two-way) set to open / close
 transition | String | - | name of a vue transition. [Detailed description](#transition)
 parent | element | parentElement | where the dropdown should attach as a sibling
 no-sibling | Boolean | false | position as child instead of sibling of `parent`
+on-body | Boolean | false | will be positioned on body instead of parent element. [Detailed description](#positioning)
 
 #### Events
 Name |  description
@@ -55,6 +55,11 @@ before-enter | will be called before open animation
 after-enter |  will be called when opened
 before-leave |  will be called before close animation
 after-leave |  will be called when closed
+
+#### Positioning
+There are three ways of positioning. The default is as a sibling of the parent element, the other posibilities are  as a child of the parent element, or on `body`.
+- The sibling/parent positioning can be problematic when you have an `overflow:hidden` as a parent to the nearest element with `position:absolute|relative|fixed` and the dropdown is overflowing.
+- the `body` positioning can be problematic when the parent is moving relative to `body` or when you depend on inheritance of styles.
 
 #### Transition
 
@@ -83,6 +88,9 @@ enter: function(el,cb) {
 ```
 
 ## Changelog
+
+- 1.2.1  
+added `on-body` prop  
 
 - 1.2.0  
 now using vue transitions  
