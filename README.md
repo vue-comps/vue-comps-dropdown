@@ -55,6 +55,7 @@ before-enter | will be called before open animation
 after-enter |  will be called when opened
 before-leave |  will be called before close animation
 after-leave |  will be called when closed
+toggled(isOpened:Boolean) | emitted when gets opened or closed. Alternative to use two-way `is-opened` prop
 
 #### Positioning
 There are three ways of positioning. The default is as a sibling of the parent element, the other posibilities are  as a child of the parent element, or on `body`.
@@ -88,6 +89,8 @@ enter: function(el,cb) {
 ```
 
 ## Changelog
+-  
+added toggled event  
 
 - 1.2.1  
 added `on-body` prop  
