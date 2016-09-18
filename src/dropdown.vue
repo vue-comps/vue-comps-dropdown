@@ -175,7 +175,7 @@ module.exports =
           top += scrollTop + parentPos.top
           left += scrollLeft + parentPos.left
         else
-          parentIsPositioned = @noSibling and  /relative|absolute|fixed/.test(parentStyle.getPropertyValue("position"))
+          parentIsPositioned = @noSibling and  /relative|absolute|fixed/.test(getComputedStyle(@parent).getPropertyValue("position"))
           unless parentIsPositioned
             top += @parent.offsetTop
             left += @parent.offsetLeft
