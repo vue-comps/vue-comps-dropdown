@@ -19,36 +19,39 @@ module.exports =
 
 
   props:
-    "id":
+    id:
       type: String
-    "class":
+    class:
       default: -> []
-    "style":
+    style:
       default: -> []
-    "notDismissable":
+    notDismissable:
       type: Boolean
       default: false
-    "closeOnClick":
+    closeOnClick:
       type: Boolean
       default: false
-    "constrainWidth":
+    constrainWidth:
       type: Boolean
       default: false
-    "noSibling":
+    noSibling:
       type: Boolean
       default: false
-    "overlay":
+    overlay:
       type: Boolean
       default: false
-    "offset":
+    offset:
       type: Number
       default: 0
       coerce: Number
-    "anchor":
+    anchor:
       type: String
-    "onBody":
+    onBody:
       type: Boolean
       default: false
+    transition:
+      type: String
+      default: "dropdown"
 
   data: ->
     removeDocumentClickListener: null

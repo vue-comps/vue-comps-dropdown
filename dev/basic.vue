@@ -31,7 +31,7 @@
       li Content
       li Content2
   button(v-bind:style="buttonStyle",style="top:80px;left:80px") with custom transition
-    dropdown(v-bind:overlay="overlay" v-bind:offset="offset" v-bind:style="style" transition="dropdown")
+    dropdown(v-bind:overlay="overlay" v-bind:offset="offset" v-bind:style="style" transition="dropdown2")
       li Content
       li Content2
   button(v-bind:style="buttonStyle",style="top:80px;right:10px",v-el:topright) Click
@@ -82,7 +82,7 @@ module.exports =
       listStyleType: "none"
       zIndex:1
   transitions:
-    dropdown:
+    dropdown2:
       css: false
       enter: (el,done) ->
         Velocity.hook el, "scale", "0.4"

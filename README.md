@@ -43,7 +43,7 @@ constrain-width | Boolean | false | width as parent width
 overlay | Boolean | false | will overlay parent
 ignore-parent | Boolean | false | will not set-up click listener on parent
 is-opened | Boolean | false | (two-way) set to open / close
-transition | String | - | name of a vue transition. [Detailed description](#transition)
+transition | String | "dropdown" | name of a vue transition. [Detailed description](#transition)
 parent | element | parentElement | where the dropdown should attach as a sibling
 no-sibling | Boolean | false | position as child instead of sibling of `parent`
 on-body | Boolean | false | will be positioned on body instead of parent element. [Detailed description](#positioning)
@@ -89,8 +89,9 @@ enter: function(el,cb) {
 ```
 
 ## Changelog
--  
+- 1.3.0  
 added toggled event  
+set default transition  
 
 - 1.2.1  
 added `on-body` prop  
