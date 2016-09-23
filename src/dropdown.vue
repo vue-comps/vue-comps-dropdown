@@ -59,6 +59,7 @@ module.exports =
     removeTimeout: null
     top: null
     left: null
+    width: null
 
 
   computed:
@@ -71,6 +72,7 @@ module.exports =
       left: @left + "px"
       top: @top + "px"
       display: "block"
+      width: @width + "px"
 
   methods:
     onClick: (e) ->
@@ -98,12 +100,22 @@ module.exports =
     show: ->
       return if @opened
       @setOpened()
-
+      @clickInside = true
+      @removeTimeout?()
+      @removeTimeout = setTimeout (=>@clickInside = false),10
+      @$once "after-enter", =>
+        @removeDocumentClickListener?()
+        @removeDocumentClickListener = @onceDocument "click", (e) =>
+          if @clickInside  or @notDismissable
+            return false
+          @hide()
+          return true
+        @$once "after-leave", =>
+          @removeDocumentClickListener?()
+          @removeDocumentClickListener = null
 
     hide: ->
       return unless @opened
-      @removeDocumentClickListener?()
-      @removeDocumentClickListener = null
       @setClosed()
 
     open: ->
@@ -130,15 +142,14 @@ module.exports =
         @parent.parentElement.insertBefore(@$els.dd, @parent.nextSibling)
 
       @$nextTick =>
-
         if @constrainWidth
           offset = Math.abs(@offset)
           totalWidth = @parent.offsetWidth-offset
-          @mergeStyle.width = totalWidth+'px'
+          @width = totalWidth
         else
           offset = @offset
           totalWidth = @$els.dd.offsetWidth+offset
-          @mergeStyle.width = undefined
+          @width = null
         totalHeight = @$els.dd.offsetHeight
         totalHeight += @parent.offsetHeight unless @overlay
 
@@ -186,15 +197,10 @@ module.exports =
         @top = top
         @left = left
 
-        unless @notDismissable
-          @removeDocumentClickListener?()
-          @removeDocumentClickListener = @onceDocument "click", (e) =>
-            @hide() unless @clickInside
-            return !@clickInside #should remove?
 
   beforeDestroy: ->
     @removeDocumentClickListener?()
     el = @$els.dd
-    if el?
+    if el?.parentNode?
       el.parentNode.removeChild(el)
 </script>

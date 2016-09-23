@@ -89,6 +89,10 @@ enter: function(el,cb) {
 ```
 
 ## Changelog
+- 1.3.1  
+fixed constrain-width  
+making not-dismissable dynamic  
+
 - 1.3.0  
 added toggled event  
 set default transition  
