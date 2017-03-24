@@ -1,3 +1,5 @@
+# DEPRECATED see [cerijs](https://github.com/cerijs) and [ceri-dropdown](https://github.com/ceri-comps/ceri-dropdown)
+
 # vue-comps-dropdown
 
 a advanced dropdown/up/left/right menu.
